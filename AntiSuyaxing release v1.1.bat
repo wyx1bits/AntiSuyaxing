@@ -16,11 +16,11 @@ timeout /t 3
 
 @echo off
 set "proc=student.exe"
-echo ��ؽ��� %proc%�����־�ɱ����Ctrl+C�˳�
+echo 监控进程 %proc%，出现就杀死，Ctrl+C退出
 :loop
 tasklist | findstr /i "%proc%" >nul
 if %errorlevel% equ 0 (
-    echo ��⵽���̣�ִ��ɱ��
+    echo 正在杀死student.exe
     taskkill /f /im %proc% >nul 2>&1
 )
 timeout /t 1 /nobreak >nul
