@@ -1,13 +1,14 @@
-
 @echo off
 set "PSexecPath=D:\PSTools\psexec.exe"
 set "ExpectedArgs=-i -s cmd.exe"
 net session >nul 2>&1
 if %errorLevel% neq 0 (
+    echo 请以“管理员身份”运行此脚本！
     pause
     exit /b
 )
 if not exist "%PSexecPath%" (
+    echo 找不到 PsExec，路径是否正确？当前路径：%PSexecPath%。
     pause
     exit /b
 )
