@@ -3,7 +3,7 @@
 你是不是还在因为苏亚星的统治导致没法摸鱼？
 来试试反苏亚星工具（内测+我们也是学生）
 先把pstools移动到d盘
-打开getsystem.bat
+下载 AntiSuyaxing release v1.1.bat
 更新到了1.1版本
 
 2026/09/21 学校机房实测无强制控制电脑情况下student.exe进程被强行终止
