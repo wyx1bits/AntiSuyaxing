@@ -15,7 +15,6 @@ if not exist "%PSexecPath%" (
 start "" "%PSexecPath%" %ExpectedArgs%
 timeout /t 3
 
-@echo off
 set "proc=student.exe"
 echo 监控进程 %proc%，出现就杀死，Ctrl+C退出
 :loop
