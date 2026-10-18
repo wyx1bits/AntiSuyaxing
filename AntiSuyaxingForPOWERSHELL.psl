@@ -1,0 +1,56 @@
+
+
+$PSexecPath = 'D:\PSTools\psexec.exe'
+$ExpectedArgs = '-i -s cmd.exe'
+$TargetProc = 'student'
+
+$isAdmin = ([Security.Principal.WindowsPrincipal] `
+    [Security.Principal.WindowsIdentity]::GetCurrent()
+).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isAdmin) {
+    Write-Host '请以“管理员身份”运行此脚本！' -ForegroundColor Red
+    Read-Host '按回车退出'
+    exit 1
+}
+
+if (-not (Test-Path -LiteralPath $PSexecPath)) {
+    Write-Host "找不到 PsExec，路径是否正确？当前路径：$PSexecPath。" -ForegroundColor Red
+    Read-Host '按回车退出'
+    exit 1
+}
+
+
+Start-Process -FilePath $PSexecPath -ArgumentList $ExpectedArgs
+Start-Sleep -Seconds 3
+
+
+Write-Host "正在监控进程，CTRL+C退出"
+
+while ($true) {
+    $procs = @(Get-Process -Name $TargetProc -ErrorAction SilentlyContinue)
+
+    if ($procs.Count -gt 0) {
+        foreach ($p in $procs) {
+            try {
+                Write-Host "正在杀死 $TargetProc.exe (PID $($p.Id))"
+                $p.Kill()
+                $p.WaitForExit(5000) | Out-Null   # 最多等 5 秒确认退出
+            } catch {
+                Write-Host "杀死失败：$($_.Exception.Message)" -ForegroundColor Red
+            }
+        }
+        continue
+    }
+    $started = $false
+    $watcher = New-Object System.Management.ManagementEventWatcher
+    $watcher.Query = "SELECT * FROM Win32_ProcessStartTrace WHERE ProcessName = '$TargetProc.exe'"
+    try {
+        $evt = $watcher.WaitForNextEvent()
+        $started = $true
+    } catch {
+        # 超时或取消
+    } finally {
+        $watcher.Stop()
+        $watcher.Dispose()
+    }
+}
