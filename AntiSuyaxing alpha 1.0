@@ -1,2 +1,1 @@
-@echo off
-taskkill /f /im "suyaxing.exe"
+#此版本已被废除
